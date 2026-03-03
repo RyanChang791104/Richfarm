@@ -4,8 +4,8 @@
 import SwiftUI
 
 struct GalleryView: View {
-    // Creating an array of all the 71 downloaded image IDs
-    let images: [String] = (1...71).map { "img_\($0)" }
+    // Images that exist in the asset catalog (img_12 through img_19 don't exist)
+    let images: [String] = (Array(1...11) + Array(20...71)).map { "img_\($0)" }
     
     @State private var selectedImage: String?
     
