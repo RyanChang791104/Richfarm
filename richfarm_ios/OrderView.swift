@@ -2,6 +2,9 @@
 // RichFarm - 態沃果園
 
 import SwiftUI
+#if os(iOS)
+import PassKit
+#endif
 
 struct OrderView: View {
     @State private var name = ""
@@ -10,9 +13,14 @@ struct OrderView: View {
     @State private var selectedProduct = "日本種香丁 (10斤 - 390元)"
     @State private var quantity = 1
     @State private var notes = ""
-    @State private var paymentMethod = "貨到付款"
+    @State private var paymentMethod = "Apple Pay"
     @State private var isSubmitting = false
     @State private var showSuccessAlert = false
+    @Environment(\.openURL) var openURL
+#if os(iOS)
+    @StateObject private var applePayHandler = ApplePayHandler()
+#endif
+    @StateObject private var notificationService = OrderNotificationService()
     
     let products = [
         "日本種香丁 (10斤 - 390元)",
@@ -24,7 +32,7 @@ struct OrderView: View {
         "南瓜・冬瓜 (依產量)"
     ]
     
-    let paymentMethods = ["貨到付款", "銀行轉帳", "面交自取"]
+    let paymentMethods = ["Apple Pay", "貨到付款", "銀行轉帳", "面交自取"]
     
     var body: some View {
         NavigationView {
@@ -156,6 +164,34 @@ struct OrderView: View {
                     .disabled(name.isEmpty || phone.isEmpty || address.isEmpty || isSubmitting)
                 }
                 
+                // MARK: - Apple Pay Button
+#if os(iOS)
+                if paymentMethod == "Apple Pay" {
+                    Section(header: Text("Apple Pay").foregroundColor(.farmDarkGreen)) {
+                        VStack(spacing: 12) {
+                            ApplePayButtonView {
+                                let price = getPrice(for: selectedProduct)
+                                applePayHandler.startPayment(
+                                    amount: price * Double(quantity),
+                                    productName: "\(selectedProduct) x\(quantity)"
+                                ) { success in
+                                    if success {
+                                        showSuccessAlert = true
+                                    }
+                                }
+                            }
+                            .frame(height: 50)
+                            .cornerRadius(10)
+                            
+                            Text("使用 Apple Pay 安全付款")
+                                .font(.system(size: 12))
+                                .foregroundColor(.farmTextLight)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+#endif
+                
                 // MARK: - Contact Info Alternative
                 Section {
                     VStack(alignment: .center, spacing: 8) {
@@ -164,16 +200,24 @@ struct OrderView: View {
                             .foregroundColor(.farmTextLight)
                         
                         Button(action: {
-                            // Call action
+                            if let url = URL(string: "tel:0911897739") {
+                                openURL(url)
+                            }
                         }) {
                             Text("📞 0911-897-739 (張媽媽)")
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundColor(.farmOrange)
                         }
                         
-                        Text("Line ID: jocy46520803")
-                            .font(.system(size: 13))
-                            .foregroundColor(.farmBrown)
+                        Button(action: {
+                            if let url = URL(string: "https://line.me/ti/p/~jocy46520803") {
+                                openURL(url)
+                            }
+                        }) {
+                            Label("Line ID: jocy46520803", systemImage: "message.fill")
+                                .font(.system(size: 13))
+                                .foregroundColor(.farmBrown)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
@@ -203,16 +247,33 @@ struct OrderView: View {
                     }
                 )
             }
+
         }
     }
     
     private func submitOrder() {
         isSubmitting = true
         
-        // Simulate network request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        let orderDetails = OrderDetails(
+            name: name,
+            phone: phone,
+            address: address,
+            product: selectedProduct,
+            quantity: quantity,
+            paymentMethod: paymentMethod,
+            notes: notes
+        )
+        
+        // Send order to Google Sheets
+        notificationService.sendOrder(orderDetails) { success in
             isSubmitting = false
             showSuccessAlert = true
         }
+    }
+    
+    private func getPrice(for product: String) -> Double {
+        if product.contains("390") { return 390 }
+        if product.contains("700") { return 700 }
+        return 300 // Default price for seasonal items
     }
 }

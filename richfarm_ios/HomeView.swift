@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showBanner = false
     @State private var heroOffset: CGFloat = 0
     @State private var selectedStory: StoryItem?
+    @Environment(\.openURL) var openURL
     
     var body: some View {
         NavigationView {
@@ -472,21 +473,51 @@ struct HomeView: View {
             Divider()
                 .padding(.horizontal, 40)
             
-            VStack(spacing: 8) {
-                Text("📍 台北市文山區羅斯福路五段262號")
-                    .font(.system(size: 13))
-                    .foregroundColor(.farmTextLight)
-                
-                HStack(spacing: 20) {
-                    Label("0911-897-739", systemImage: "phone.fill")
-                    Label("(02) 2932-9378", systemImage: "phone.fill")
+            VStack(spacing: 12) {
+                // Address - tappable to open Maps
+                Button(action: {
+                    if let url = URL(string: "https://maps.apple.com/?q=\("台北市文山區羅斯福路五段262號".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") {
+                        openURL(url)
+                    }
+                }) {
+                    Label("台北市文山區羅斯福路五段262號", systemImage: "mappin.circle.fill")
+                        .font(.system(size: 13))
+                        .foregroundColor(.farmTextLight)
                 }
-                .font(.system(size: 12))
-                .foregroundColor(.farmGreen)
                 
-                Text("Line ID: jocy46520803")
-                    .font(.system(size: 12))
-                    .foregroundColor(.farmGreen)
+                // Phone numbers - tappable to call
+                HStack(spacing: 20) {
+                    Button(action: {
+                        if let url = URL(string: "tel:0911897739") {
+                            openURL(url)
+                        }
+                    }) {
+                        Label("0911-897-739", systemImage: "phone.fill")
+                            .font(.system(size: 12))
+                            .foregroundColor(.farmGreen)
+                    }
+                    
+                    Button(action: {
+                        if let url = URL(string: "tel:0229329378") {
+                            openURL(url)
+                        }
+                    }) {
+                        Label("(02) 2932-9378", systemImage: "phone.fill")
+                            .font(.system(size: 12))
+                            .foregroundColor(.farmGreen)
+                    }
+                }
+                
+                // Line ID - tappable to open Line
+                Button(action: {
+                    if let url = URL(string: "https://line.me/ti/p/~jocy46520803") {
+                        openURL(url)
+                    }
+                }) {
+                    Label("Line ID: jocy46520803", systemImage: "message.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(.farmGreen)
+                }
                 
                 Text("© 2026 RichFarm 態沃果園")
                     .font(.system(size: 11))
