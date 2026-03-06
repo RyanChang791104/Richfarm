@@ -156,19 +156,25 @@ struct HomeView: View {
                     .foregroundColor(.white.opacity(0.95))
                     .shadow(color: .black.opacity(0.4), radius: 3, x: 0, y: 1)
                 
-                HStack(spacing: 6) {
-                    Image(systemName: "phone.fill")
-                        .font(.caption)
-                    Text("0911-897-739")
-                        .font(.system(size: 14, weight: .semibold))
+                Button(action: {
+                    if let url = URL(string: "tel:0911897739") {
+                        openURL(url)
+                    }
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "phone.fill")
+                            .font(.caption)
+                        Text("0911-897-739")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                    .foregroundColor(.farmGold)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .background(
+                        Capsule()
+                            .fill(Color.black.opacity(0.3))
+                    )
                 }
-                .foregroundColor(.farmGold)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 7)
-                .background(
-                    Capsule()
-                        .fill(Color.black.opacity(0.3))
-                )
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 50)
@@ -228,7 +234,7 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             
             VStack(alignment: .leading, spacing: 14) {
-                Text("柳丁香丁開採中！")
+                Text("蜜丁香丁開採中！")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.farmBrown)
                 
@@ -286,10 +292,10 @@ struct HomeView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     productCard(imageName: "img_3", icon: "🍊", name: "日本種香丁", desc: "果肉細膩·入口沁甜", color: .farmOrange)
-                    productCard(imageName: "img_6", icon: "🥝", name: "關西柚子", desc: "50年老樹·有溫度", color: .farmGreen)
+                    productCard(imageName: "img_6", icon: "🍊", name: "桶柑", desc: "50年老樹·有溫度", color: .farmGreen)
                     productCard(imageName: "img_7", icon: "🫒", name: "苦茶油", desc: "自家栽種·純正天然", color: .farmBrown)
-                    productCard(imageName: "img_8", icon: "🍵", name: "仙草茶", desc: "6小時熬煮·清熱退火", color: Color(red: 0.3, green: 0.3, blue: 0.3))
-                    productCard(imageName: "img_10", icon: "🎃", name: "南瓜冬瓜", desc: "山上自種·新鮮直送", color: .farmGold)
+                    productCard(imageName: "xiancao_tea", icon: "🍵", name: "仙草茶", desc: "6小時熬煮·清熱退火", color: Color(red: 0.3, green: 0.3, blue: 0.3))
+                    productCard(imageName: "img_10", icon: "🍋", name: "柚子", desc: "50年老樹·有溫度", color: .farmGold)
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 8)
@@ -373,9 +379,9 @@ struct HomeView: View {
                 storyCard(
                     story: StoryItem(
                         imageName: "img_4",
-                        title: "有溫度的柚子",
-                        preview: "我們不僅賣柚子，也賣感情。重視每一位跟我們買水果的朋友...",
-                        fullContent: "我們不僅賣柚子，也賣感情。重視每一位跟我們買水果的朋友。\n\n老爸種了50年以上的文旦柚，皮厚有水份，有酸有甜，就如同人生一般有溫度！\n\n柚子全身都是寶：\n・綠皮 → 自製清潔劑\n・白囊 → 柚皮糖\n・果肉 → 果醬/柚子茶",
+                        title: "有溫度的桶柑",
+                        preview: "我們不僅賣桶柑，也賣感情。重視每一位跟我們買水果的朋友...",
+                        fullContent: "我們不僅賣桶柑，也賣感情。重視每一位跟我們買水果的朋友。\n\n老爸種了50年以上的桶柑，皮薄多汁，有酸有甜，就如同人生一般有溫度！\n\n桶柑品種優良，酸甜可口，是每年冬天最受歡迎的水果之一。",
                         icon: "heart.fill",
                         color: .farmOrange
                     )
@@ -493,7 +499,7 @@ struct HomeView: View {
                         }
                     }) {
                         Label("0911-897-739", systemImage: "phone.fill")
-                            .font(.system(size: 12))
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.farmGreen)
                     }
                     
@@ -503,7 +509,7 @@ struct HomeView: View {
                         }
                     }) {
                         Label("(02) 2932-9378", systemImage: "phone.fill")
-                            .font(.system(size: 12))
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.farmGreen)
                     }
                 }
@@ -515,7 +521,7 @@ struct HomeView: View {
                     }
                 }) {
                     Label("Line ID: jocy46520803", systemImage: "message.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.farmGreen)
                 }
                 

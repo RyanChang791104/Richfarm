@@ -35,22 +35,22 @@ struct ProductsView: View {
         Product(
             imageName: "img_5",
             emoji: "🍊",
-            name: "柳丁",
+            name: "日本種蜜丁",
             description: "每年只有在冬天接近年終才有機會吃到，接單現採，新鮮程度沒話說！富含維他命C。",
             price: "依季節報價",
             weight: "10斤/20斤",
-            details: "一年只有一次的多汁柳丁\n新鮮採收，接單現採\n富含維他命C\n關西態沃小農果園獨家",
+            details: "一年只有一次的多汁蜜丁\n新鮮採收，接單現採\n富含維他命C\n關西態沃小農果園獨家",
             color: Color(red: 0.9, green: 0.6, blue: 0.1),
             tags: ["當季", "維他命C"]
         ),
         Product(
             imageName: "img_6",
             emoji: "🥝",
-            name: "文旦柚",
-            description: "老爸種了50年以上的文旦柚，皮厚有水份，有酸有甜，就如同人生一般有溫度！",
+            name: "桶柑",
+            description: "老爸種了50年以上的桶柑，皮薄多汁，有酸有甜，就如同人生一般有溫度！",
             price: "依季節報價",
             weight: "依產量",
-            details: "50年以上老樹\n文旦柚品種\n柚子全身都是寶：\n・綠皮 → 自製清潔劑\n・白囊 → 柚皮糖\n・果肉 → 果醬/柚子茶",
+            details: "50年以上老樹\n桶柑品種\n皮薄多汁\n酸甜可口\n產地直送・新鮮保證",
             color: .farmGreen,
             tags: ["老樹", "有溫度"]
         ),
@@ -78,14 +78,14 @@ struct ProductsView: View {
         ),
         Product(
             imageName: "img_10",
-            emoji: "🎃",
-            name: "南瓜・冬瓜",
-            description: "山上自種各式農作物，新鮮直送，自己種植自己料理！",
+            emoji: "🍋",
+            name: "柚子",
+            description: "老爸種了50年以上的柚子，皮厚有水份，有酸有甜，就如同人生一般有溫度！",
             price: "依季節報價",
             weight: "依產量",
-            details: "山上自然種植\n新鮮現採\n自然農法",
+            details: "50年以上老樹\n柚子全身都是寶：\n・綠皮 → 自製清潔劑\n・白囊 → 柚皮糖\n・果肉 → 果醬/柚子茶",
             color: .farmGold,
-            tags: ["自然農法"]
+            tags: ["老樹", "自然農法"]
         )
     ]
     
@@ -241,6 +241,7 @@ struct ProductCardView: View {
 struct ProductDetailSheet: View {
     let product: Product
     @Environment(\.dismiss) var dismiss
+    @Environment(\.openURL) var openURL
     
     var body: some View {
         NavigationView {
@@ -383,7 +384,9 @@ struct ProductDetailSheet: View {
                         
                         // Order Button
                         Button(action: {
-                            // Action to switch to Order Tab or Call
+                            if let url = URL(string: "tel:0911897739") {
+                                openURL(url)
+                            }
                         }) {
                             HStack(spacing: 12) {
                                 Image(systemName: "phone.fill")

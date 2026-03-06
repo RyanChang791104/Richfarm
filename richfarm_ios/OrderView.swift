@@ -2,9 +2,6 @@
 // RichFarm - 態沃果園
 
 import SwiftUI
-#if os(iOS)
-import PassKit
-#endif
 
 struct OrderView: View {
     @State private var name = ""
@@ -13,26 +10,23 @@ struct OrderView: View {
     @State private var selectedProduct = "日本種香丁 (10斤 - 390元)"
     @State private var quantity = 1
     @State private var notes = ""
-    @State private var paymentMethod = "Apple Pay"
+    @State private var paymentMethod = "貨到付款"
     @State private var isSubmitting = false
     @State private var showSuccessAlert = false
     @Environment(\.openURL) var openURL
-#if os(iOS)
-    @StateObject private var applePayHandler = ApplePayHandler()
-#endif
     @StateObject private var notificationService = OrderNotificationService()
     
     let products = [
         "日本種香丁 (10斤 - 390元)",
         "日本種香丁 (20斤 - 700元)",
-        "柳丁 (依季節報價)",
+        "日本種蜜丁 (依季節報價)",
         "關西仙草茶 (瓶裝)",
         "純手工苦茶油 (瓶裝)",
-        "關西柚子 (依產量)",
-        "南瓜・冬瓜 (依產量)"
+        "桶柑 (依產量)",
+        "柚子 (依產量)"
     ]
     
-    let paymentMethods = ["Apple Pay", "貨到付款", "銀行轉帳", "面交自取"]
+    let paymentMethods = ["貨到付款", "銀行轉帳", "面交自取"]
     
     var body: some View {
         NavigationView {
@@ -163,34 +157,7 @@ struct OrderView: View {
                     )
                     .disabled(name.isEmpty || phone.isEmpty || address.isEmpty || isSubmitting)
                 }
-                
-                // MARK: - Apple Pay Button
-#if os(iOS)
-                if paymentMethod == "Apple Pay" {
-                    Section(header: Text("Apple Pay").foregroundColor(.farmDarkGreen)) {
-                        VStack(spacing: 12) {
-                            ApplePayButtonView {
-                                let price = getPrice(for: selectedProduct)
-                                applePayHandler.startPayment(
-                                    amount: price * Double(quantity),
-                                    productName: "\(selectedProduct) x\(quantity)"
-                                ) { success in
-                                    if success {
-                                        showSuccessAlert = true
-                                    }
-                                }
-                            }
-                            .frame(height: 50)
-                            .cornerRadius(10)
-                            
-                            Text("使用 Apple Pay 安全付款")
-                                .font(.system(size: 12))
-                                .foregroundColor(.farmTextLight)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-#endif
+
                 
                 // MARK: - Contact Info Alternative
                 Section {
@@ -215,7 +182,7 @@ struct OrderView: View {
                             }
                         }) {
                             Label("Line ID: jocy46520803", systemImage: "message.fill")
-                                .font(.system(size: 13))
+                                .font(.system(size: 16, weight: .bold))
                                 .foregroundColor(.farmBrown)
                         }
                     }
@@ -269,11 +236,5 @@ struct OrderView: View {
             isSubmitting = false
             showSuccessAlert = true
         }
-    }
-    
-    private func getPrice(for product: String) -> Double {
-        if product.contains("390") { return 390 }
-        if product.contains("700") { return 700 }
-        return 300 // Default price for seasonal items
     }
 }
